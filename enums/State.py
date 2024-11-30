@@ -1,7 +1,7 @@
 from enum import Enum
 class State(Enum):
-    Susceptible = 0
-    Exposed = 1
-    Infected = 2
-    Doubtful = 3
-    Recovered = 4
+    SUSCEPTIBLE = 0
+    EXPOSED = 1
+    INFECTED = 2
+    DOUBTFUL = 3
+    RECOVERED = 4
