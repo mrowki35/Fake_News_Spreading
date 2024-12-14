@@ -24,6 +24,7 @@ class UserAgent:
         self.sex_group = sex_group
         self.social_platform = social_platform
         self.state = State.SUSCEPTIBLE  # Initial state of the agent
+        print(unique_id + " " + age_group + " ")
 
     def step(self):
         """
@@ -81,3 +82,10 @@ class UserAgent:
         return (f"UserAgent(id={self.unique_id}, age_group={self.age_group.name}, "
                 f"sex_group={self.sex_group.name}, social_platform={self.social_platform.name}, "
                 f"state={self.state.name})")
+    def to_string(self):
+        """
+        Returns a detailed string representation of the UserAgent.
+        """
+        return (f"UserAgent [ID: {self.unique_id}, Age Group: {self.age_group.name}, "
+                f"Sex Group: {self.sex_group.name}, Social Platform: {self.social_platform.name}, "
+                f"State: {self.state.name}]")
