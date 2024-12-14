@@ -3,8 +3,6 @@ import random
 from agents.UserAgent import UserAgent
 from enums.AgeGroup import AgeGroup
 from enums.SexGroup import SexGroup
-from enums.SocialPlatform import SocialPlatform
-from enums.State import State
 
 
 class DisinformationModel:
@@ -34,9 +32,9 @@ class DisinformationModel:
                 model=self,
                 age_group=random.choice(list(AgeGroup)),
                 sex_group=random.choice(list(SexGroup)),
-                social_platform=random.choice(list(SocialPlatform))
             )
             self.agents.append(agent)
+            print(agent.to_string())
 
         self.running = True
 
@@ -48,14 +46,3 @@ class DisinformationModel:
         random.shuffle(self.agents)
         for agent in self.agents:
             agent.step()
-
-    def get_state_counts(self):
-        """
-        Counts the number of agents in each state.
-
-        Returns:
-            dict: Keys are states, values are the number of agents in each state.
-        """
-        states = [agent.state for agent in self.agents]
-        counts = {state: states.count(state) for state in State}
-        return counts

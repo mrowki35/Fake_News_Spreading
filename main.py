@@ -1,8 +1,14 @@
+import tkinter as tk
+import logging
+
 from models.DisinformationModel import DisinformationModel
-from enums.State import State
+from ui.SimulationApp import SimulationApp
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def run_model():
+    # Model parameters
     N = 1000  # Number of agents
     alpha = 0.05  # Infection rate
     beta = 0.1  # Probability of believing in disinformation
@@ -12,18 +18,9 @@ def run_model():
 
     model = DisinformationModel(N, alpha, beta, gamma, delta, theta)
 
-    num_steps = 100
-    for step in range(num_steps):
-        model.step()
-        counts = model.get_state_counts()
-        print(f"Step {step + 1}:")
-        for state in State:
-            print(f"  {state.name}: {counts.get(state, 0)}")
-        print("-" * 30)
-
-        if counts.get(State.RECOVERED, 0) == model.num_agents:
-            print("All agents have recovered. Ending simulation.")
-            break
+    root = tk.Tk()
+    app = SimulationApp(root, model, num_steps=1000, update_frequency=1)
+    root.mainloop()
 
 
 if __name__ == "__main__":
