@@ -1,4 +1,6 @@
 from enum import Enum
+
+
 class State(Enum):
     SUSCEPTIBLE = 0
     EXPOSED = 1

@@ -1,4 +1,6 @@
 from enum import Enum
+
+
 class AgeGroup(Enum):
     from00to09 = 0
     from10to19 = 1
@@ -9,5 +11,3 @@ class AgeGroup(Enum):
     from60to69 = 6
     from70to79 = 7
     from80toXX = 8
-
-

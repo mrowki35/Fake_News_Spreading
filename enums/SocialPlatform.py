@@ -1,4 +1,6 @@
 from enum import Enum
+
+
 class SocialPlatform(Enum):
     LinkedIn = 0
     Facebook = 1
@@ -13,4 +15,3 @@ class SocialPlatform(Enum):
     WeChat = 10
     Weibo = 11
     Other = 12
-    
