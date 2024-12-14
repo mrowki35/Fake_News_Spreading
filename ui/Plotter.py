@@ -3,6 +3,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from enums.State import State
 import tkinter as tk
 
+
 class Plotter:
     def __init__(self, root):
         """
@@ -21,9 +22,12 @@ class Plotter:
         self.ax.set_ylabel("Number of Agents")
         self.lines = {}
         for state in State:
-            line, = self.ax.plot([], [], label=state.name)
+            line, = self.ax.plot([], [], label=f"{state.name}: 0")
             self.lines[state] = line
-        self.ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        self.legend = self.ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25),
+                                     ncol=len(State), fontsize='small')
+
+        self.fig.tight_layout(rect=[0, 0.05, 1, 1])
 
     def update_plot(self, history):
         """
@@ -34,9 +38,13 @@ class Plotter:
         """
         for state, line in self.lines.items():
             line.set_data(range(len(history[state])), history[state])
+            latest_count = history[state][-1] if history[state] else 0
+            line.set_label(f"{state.name}: {latest_count}")
         self.ax.relim()
         self.ax.autoscale_view()
-        self.fig.tight_layout(rect=[0, 0, 0.85, 1])
+        self.ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25),
+                       ncol=len(State), fontsize='small')
+        self.fig.tight_layout(rect=[0, 0.05, 1, 1])
         self.canvas.draw()
 
     def update_plot_to_step(self, history, step):
@@ -47,11 +55,18 @@ class Plotter:
             history (dict): A dictionary containing the history of states.
             step (int): The step to which the plot should be updated.
         """
+        max_step = min([len(history[state]) for state in State])
+        if step > max_step:
+            step = max_step
         for state, line in self.lines.items():
             line.set_data(range(step), history[state][:step])
+            latest_count = history[state][step - 1] if step > 0 else 0
+            line.set_label(f"{state.name}: {latest_count}")
         self.ax.relim()
         self.ax.autoscale_view()
-        self.fig.tight_layout(rect=[0, 0, 0.85, 1])
+        self.ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25),
+                       ncol=len(State), fontsize='small')
+        self.fig.tight_layout(rect=[0, 0.05, 1, 1])
         self.canvas.draw()
 
     def reset_plot(self):
@@ -60,6 +75,10 @@ class Plotter:
         """
         for state, line in self.lines.items():
             line.set_data([], [])
+            line.set_label(f"{state.name}: 0")
         self.ax.relim()
         self.ax.autoscale_view()
+        self.ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25),
+                       ncol=len(State), fontsize='small')
+        self.fig.tight_layout(rect=[0, 0.05, 1, 1])
         self.canvas.draw()
