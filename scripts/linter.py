@@ -1,7 +1,7 @@
-import os
-import re
 import sys
+import os
 import ast
+import re
 
 
 class Linter:
@@ -43,14 +43,18 @@ class Linter:
             self.errors.append(f"{file_path}: Syntax error - {e}")
 
     def check_naming_conventions(self, file_path, tree):
+        # Sprawdzanie konwencji nazewnictwa (snake_case dla funkcji i zmiennych)
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
                 if not re.match(r'^[a-z_][a-z0-9_]*$', node.name):
                     self.errors.append(
                         f"{file_path}:{node.lineno}: Function name '{node.name}' should be in snake_case.")
-            elif isinstance(node, ast.Variable):
-                if not re.match(r'^[a-z_][a-z0-9_]*$', node.id):
-                    self.errors.append(f"{file_path}:{node.lineno}: Variable name '{node.id}' should be in snake_case.")
+            elif isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name):
+                        if not re.match(r'^[a-z_][a-z0-9_]*$', target.id):
+                            self.errors.append(
+                                f"{file_path}:{target.lineno}: Variable name '{target.id}' should be in snake_case.")
 
     def lint_file(self, file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -66,12 +70,10 @@ class Linter:
         except SyntaxError as e:
             self.errors.append(f"{file_path}: Syntax error - {e}")
 
-    def lint_all_py_files(self, root_dir):
-        for subdir, _, files in os.walk(root_dir):
-            for file in files:
-                if file.endswith('.py'):
-                    file_path = os.path.join(subdir, file)
-                    self.lint_file(file_path)
+    def lint_all_py_files(self, files):
+        for file_path in files:
+            if file_path.endswith('.py'):
+                self.lint_file(file_path)
 
     def report(self):
         if not self.errors:
@@ -85,12 +87,11 @@ class Linter:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python linter.py <path_to_directory>")
-    else:
-        root_directory = sys.argv[1]
-        linter = Linter()
-        linter.lint_all_py_files(root_directory)
-        success = linter.report()
-        if not success:
-            sys.exit(1)
+    if len(sys.argv) < 2:
+        print("Usage: python linter.py <file1.py> [<file2.py> ...]")
+        sys.exit(1)
+    linter = Linter()
+    linter.lint_all_py_files(sys.argv[1:])
+    success = linter.report()
+    if not success:
+        sys.exit(1)
