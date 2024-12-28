@@ -3,11 +3,11 @@ repos:
     hooks:
       - id: custom-formatter
         name: Custom Python Formatter
-        entry: python scripts/formatter.py .
+        entry: python scripts/formatter.py
         language: system
-        files: \.py$
+        types: [ python ]
       - id: custom-linter
         name: Custom Python Linter
-        entry: python scripts/linter.py .
+        entry: python scripts/linter.py
         language: system
-        files: \.py$
+        types: [ python ]
