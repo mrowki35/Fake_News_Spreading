@@ -129,15 +129,15 @@ class DisinformationModel:
         Define modifiers for beta based on age, sex, and education.
         """
         age_mod = {
-            AgeGroup.from00to09: 1.3,
-            AgeGroup.from10to19: 1.1,
+            AgeGroup.from00to09: 3.8,
+            AgeGroup.from10to19: 3.1,
             AgeGroup.from20to29: 0.65,
             AgeGroup.from30to39: 0.55,
             AgeGroup.from40to49: 0.50,
             AgeGroup.from50to59: 0.65,
             AgeGroup.from60to69: 0.8,
-            AgeGroup.from70to79: 1.2,
-            AgeGroup.from80toXX: 1.4,
+            AgeGroup.from70to79: 1.7,
+            AgeGroup.from80toXX: 1.9,
         }
 
         sex_mod = {
@@ -147,7 +147,7 @@ class DisinformationModel:
         }
 
         edu_mod = {
-            EducationGroup.PRIMARY: 1.2,
+            EducationGroup.PRIMARY: 2,
             EducationGroup.SECONDARY: 0.8,
             EducationGroup.HIGHER: 0.6,
             EducationGroup.VOCATIONAL: 0.85,
@@ -350,10 +350,10 @@ class DisinformationModel:
         Returns:
             float: The modifier for alpha.
         """
-        mod = 0.60 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0)
-        + 0.05 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
-        + 0.50 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
-        + 0.35 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)
+        mod = (0.60 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0)
+               + 0.05 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
+               + 0.50 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
+               + 0.35 * self.alpha_modifiers['education'].get(agent.education_group, 1.0))
 
         return mod
 
@@ -367,9 +367,10 @@ class DisinformationModel:
         Returns:
             float: The modifier for beta.
         """
-        mod = 0.05 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
-        + 0.45 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
-        + 0.30 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)
+        mod = (0.05 * self.beta_modifiers['sex'].get(agent.sex_group, 1.0)
+               + 0.16 * self.beta_modifiers['age'].get(agent.age_group, 1.0)
+               + 0.1 * self.beta_modifiers['education'].get(agent.education_group, 1.0)) * 0.2
+        # print(mod)
 
         return mod
 
