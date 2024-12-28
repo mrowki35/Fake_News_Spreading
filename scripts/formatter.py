@@ -1,4 +1,3 @@
-import os
 import sys
 import re
 import textwrap
@@ -8,7 +7,7 @@ def fix_indentation(code, spaces=4):
     return code.replace('\t', ' ' * spaces)
 
 
-def limit_line_length(code, max_length=80):
+def limit_line_length(code, max_length=120):
     lines = code.split('\n')
     new_lines = []
     for line in lines:
@@ -67,25 +66,26 @@ def format_file(file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
         formatted_content = format_code(content)
-        with open(file_path, 'w', encoding='utf-8') as file:
-            file.write(formatted_content)
-        print(f"Formatted: {file_path}")
+        if content != formatted_content:
+            with open(file_path, 'w', encoding='utf-8') as file:
+                file.write(formatted_content)
+            print(f"Formatted: {file_path}")
+            return 1
+        else:
+            print(f"Formatted: {file_path} (no changes)")
+            return 0
     except Exception as e:
         print(f"Error formatting {file_path}: {e}")
-
-
-def format_all_py_files(root_dir):
-    for subdir, _, files in os.walk(root_dir):
-        for file in files:
-            if file.endswith('.py'):
-                file_path = os.path.join(subdir, file)
-                format_file(file_path)
+        return 1
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python formatter.py <path_to_directory>")
-    else:
-        root_directory = sys.argv[1]
-        format_all_py_files(root_directory)
-        print(f"All .py files in {root_directory} have been formatted.")
+    if len(sys.argv) < 2:
+        print("Usage: python formatter.py <file1.py> [<file2.py> ...]")
+        sys.exit(1)
+    exit_code = 0
+    for file_path in sys.argv[1:]:
+        result = format_file(file_path)
+        if result != 0:
+            exit_code = result
+    sys.exit(exit_code)
