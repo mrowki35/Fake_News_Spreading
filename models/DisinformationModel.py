@@ -77,34 +77,51 @@ class DisinformationModel:
         Define modifiers for alpha based on age, sex, and education.
         """
         age_mod = {
-            AgeGroup.from00to09: 0.5,
-            AgeGroup.from10to19: 0.7,
-            AgeGroup.from20to29: 1.0,
-            AgeGroup.from30to39: 1.0,
-            AgeGroup.from40to49: 0.9,
-            AgeGroup.from50to59: 0.8,
-            AgeGroup.from60to69: 0.7,
-            AgeGroup.from70to79: 0.6,
-            AgeGroup.from80toXX: 0.5,
+            AgeGroup.from00to09: 1.1,
+            AgeGroup.from10to19: 1.0,
+            AgeGroup.from20to29: 0.8,
+            AgeGroup.from30to39: 0.7,
+            AgeGroup.from40to49: 0.65,
+            AgeGroup.from50to59: 0.6,
+            AgeGroup.from60to69: 1.0,
+            AgeGroup.from70to79: 1.0,
+            AgeGroup.from80toXX: 1.1,
         }
 
         sex_mod = {
             SexGroup.MALE: 1.0,
-            SexGroup.FEMALE: 0.9,
-            SexGroup.OTHER: 0.8,
+            SexGroup.FEMALE: 0.95,
+            SexGroup.OTHER: 1.1,
         }
 
         edu_mod = {
-            EducationGroup.PRIMARY: 0.5,
-            EducationGroup.SECONDARY: 0.7,
-            EducationGroup.HIGHER: 1.0,
-            EducationGroup.VOCATIONAL: 0.8,
+            EducationGroup.PRIMARY: 1.2,
+            EducationGroup.SECONDARY: 0.9,
+            EducationGroup.HIGHER: 0.8,
+            EducationGroup.VOCATIONAL: 0.9,
+        }
+
+        platfrom_mod = { 
+            SocialPlatform.LinkedIn: 0.2,
+            SocialPlatform.Facebook: 0.55,
+            SocialPlatform.Instagram: 0.4,
+            SocialPlatform.X: 0.60,
+            SocialPlatform.Telegram: 0.1,
+            SocialPlatform.Reddit: 0.3,
+            SocialPlatform.Pinterest: 0.1,
+            SocialPlatform.Snapchat: 0.15,
+            SocialPlatform.TikTok: 0.69,
+            SocialPlatform.YouTube: 0.3,
+            SocialPlatform.WeChat: 0.05,
+            SocialPlatform.Weibo: 0.1,
+            SocialPlatform.Other: 0.32,
         }
 
         return {
             'age': age_mod,
             'sex': sex_mod,
             'education': edu_mod,
+            'platform': platfrom_mod
         }
 
     def _define_beta_modifiers(self):
@@ -245,10 +262,13 @@ class DisinformationModel:
             EducationGroup.VOCATIONAL: 1.5,
         }
 
+ 
+
         return {
             'age': age_mod,
             'sex': sex_mod,
             'education': edu_mod,
+
         }
 
     def _choose_age_group(self, social_platform):
@@ -333,11 +353,13 @@ class DisinformationModel:
 
         Returns:
             float: The modifier for alpha.
+            1.1, 1.2, 1.1, 0.65
         """
-        mod = 1.0
-        mod *= self.alpha_modifiers['age'].get(agent.age_group, 1.0)
-        mod *= self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
-        mod *= self.alpha_modifiers['education'].get(agent.education_group, 1.0)
+        mod = 0.5 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0) 
+        + 0.05 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
+        + 0.35 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
+        + 0.2 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)
+
         return mod
 
     def get_beta_modifier(self, agent):
