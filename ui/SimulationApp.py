@@ -2,8 +2,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from threading import Thread, Event
 import time
+import pandas as pd
 import logging
 
+from enums.groups.EducationGroup import EducationGroup
+from enums.groups.SexGroup import SexGroup
 from ui.Plotter import Plotter
 from utils.StateCounter import StateCounter
 from enums.State import State
@@ -137,8 +140,25 @@ class SimulationApp:
             percent_label.grid(row=idx, column=1, sticky=tk.W, pady=2)
             self.percent_labels[state] = percent_label
 
-        self.selected_platforms_label = ttk.Label(counts_frame, text="Selected Platform: None")
+        self.selected_platforms_label = ttk.Label(counts_frame, text="Selected Platform: None",
+                                                  font=('Helvetica', 10, 'bold'))
         self.selected_platforms_label.grid(row=len(State), column=0, columnspan=2, sticky=tk.W, pady=2)
+
+        # Additional State Counts for Sex and Education
+        education_frame = ttk.LabelFrame(self.root, text="Agent Demographics")
+        education_frame.pack(side=tk.LEFT, padx=10, pady=10)
+
+        self.education_labels = {}
+        for idx, edu in enumerate(EducationGroup):
+            label = ttk.Label(education_frame, text=f"{edu.name}: 0")
+            label.grid(row=idx, column=0, sticky=tk.W, pady=2)
+            self.education_labels[edu] = label
+
+        self.sex_labels = {}
+        for idx, sex in enumerate(SexGroup):
+            label = ttk.Label(education_frame, text=f"{sex.name}: 0")
+            label.grid(row=idx, column=1, sticky=tk.W, pady=2)
+            self.sex_labels[sex] = label
 
     def start_simulation(self):
         """
@@ -169,7 +189,7 @@ class SimulationApp:
 
                 selected_platform_name = self.selected_platform_var.get()
                 if not selected_platform_name:
-                    raise ValueError("Please select at least one social media platform.")
+                    raise ValueError("Please select one social media platform.")
 
                 selected_platform = SocialPlatform[selected_platform_name]
 
@@ -202,7 +222,7 @@ class SimulationApp:
 
                 self.is_running = True
                 self.stop_event.clear()
-                self.save_button.config(state=tk.NORMAL)
+                self.save_button.config(state=tk.NORMAL)  #
                 self.thread = Thread(target=self.run_simulation)
                 self.thread.start()
                 self.start_button.config(state=tk.DISABLED)
@@ -254,7 +274,7 @@ class SimulationApp:
 
             selected_platform_name = self.selected_platform_var.get()
             if not selected_platform_name:
-                raise ValueError("Please select at least one social media platform.")
+                raise ValueError("Please select one social media platform.")
 
             selected_platform = SocialPlatform[selected_platform_name]
 
@@ -399,35 +419,59 @@ class SimulationApp:
             percent = (count / total * 100) if total > 0 else 0
             self.percent_labels[state].config(text=f"{state.name} (%): {percent:.2f}%")
 
+        sex_counts = {sex: 0 for sex in SexGroup}
+        education_counts = {edu: 0 for edu in EducationGroup}
+
+        for agent in self.model.agents:
+            sex_counts[agent.sex_group] += 1
+            education_counts[agent.education_group] += 1
+
+        for sex, label in self.sex_labels.items():
+            label.config(text=f"{sex.name}: {sex_counts.get(sex, 0)}")
+
+        for edu, label in self.education_labels.items():
+            label.config(text=f"{edu.name}: {education_counts.get(edu, 0)}")
+
     def save_results(self):
         """
-        Saves the simulation results to a CSV file.
+        Saves the simulation results to two CSV files:
+        1. simulation_steps.csv - zawiera wyniki symulacji krok po kroku.
+        2. agent_details.csv - zawiera szczegółowe dane każdego agenta.
         """
-        import csv
         from tkinter import filedialog
 
         history = self.state_counter.get_history()
-        filepath = filedialog.asksaveasfilename(defaultextension=".csv",
-                                                filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
-        if not filepath:
+        agents = self.model.agents
+
+        df_steps = pd.DataFrame({
+            "Step": range(1, len(history[next(iter(history))]) + 1)
+        })
+        for state in State:
+            df_steps[state.name] = history[state]
+
+        agent_data = [agent.to_dict() for agent in agents]
+        df_agents = pd.DataFrame(agent_data)
+
+        directory = filedialog.askdirectory(title="Select Directory to Save Results")
+        if not directory:
             return
 
+        base_filename = tk.simpledialog.askstring("Input", "Enter base filename (without extension):",
+                                                  parent=self.root)
+        if not base_filename:
+            base_filename = "results"
+
+        filepath_steps = f"{directory}/{base_filename}_simulation_steps.csv"
+        filepath_agents = f"{directory}/{base_filename}_agent_details.csv"
+
         try:
-            with open(filepath, 'w', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                selected_platform = self.model.selected_social_platforms[
-                    0].name if self.model.selected_social_platforms else "None"
-                writer.writerow(["Selected Social Media Platform:", selected_platform])
-                writer.writerow([])
-                header = ["Step"] + [state.name for state in State]
-                writer.writerow(header)
-                for step in range(len(history[next(iter(history))])):
-                    row = [step + 1]
-                    for state in State:
-                        row.append(history[state][step])
-                    writer.writerow(row)
-            logging.info(f"Results saved to {filepath}")
-            messagebox.showinfo("Success", f"Results saved to {filepath}")
+            df_steps.to_csv(filepath_steps, index=False)
+            logging.info(f"Simulation steps saved to {filepath_steps}")
+
+            df_agents.to_csv(filepath_agents, index=False)
+            logging.info(f"Agent details saved to {filepath_agents}")
+
+            messagebox.showinfo("Success", f"Results saved to:\n{filepath_steps}\n{filepath_agents}")
         except Exception as e:
             logging.error(f"Error saving results: {e}")
             messagebox.showerror("Error", f"Failed to save results: {e}")

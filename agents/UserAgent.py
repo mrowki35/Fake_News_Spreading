@@ -1,13 +1,12 @@
 import random
 
-from enums.AgeGroup import AgeGroup
-from enums.SexGroup import SexGroup
+from enums.groups.SexGroup import SexGroup
 from enums.State import State
 from enums.SocialPlatform import SocialPlatform
 
 
 class UserAgent:
-    def __init__(self, unique_id, model, age_group, sex_group, social_platform):
+    def __init__(self, unique_id, model, age_group, sex_group, education_group, social_platform):
         """
         Initializes a user agent.
 
@@ -22,6 +21,7 @@ class UserAgent:
         self.model = model
         self.age_group = age_group
         self.sex_group = sex_group
+        self.education_group = education_group
         self.social_platform = social_platform
         self.state = State.SUSCEPTIBLE  # Initial state of the agent
 
@@ -79,13 +79,26 @@ class UserAgent:
 
     def __repr__(self):
         return (f"UserAgent(id={self.unique_id}, age_group={self.age_group.name}, "
-                f"sex_group={self.sex_group.name}, social_platform={self.social_platform.name}, "
-                f"state={self.state.name})")
+                f"sex_group={self.sex_group.name}, education_group={self.education_group.name}, "
+                f"social_platform={self.social_platform.name}, state={self.state.name})")
+
+    def to_dict(self):
+        """
+        Returns a dictionary representation of the UserAgent.
+        """
+        return {
+            "ID": self.unique_id,
+            "Age Group": self.age_group.name,
+            "Sex Group": self.sex_group.name,
+            "Education Group": self.education_group.name,
+            "Social Platform": self.social_platform.name,
+            "State": self.state.name
+        }
 
     def to_string(self):
         """
         Returns a detailed string representation of the UserAgent.
         """
         return (f"UserAgent [ID: {self.unique_id}, Age Group: {self.age_group.name}, "
-                f"Sex Group: {self.sex_group.name}, Social Platform: {self.social_platform.name}, "
-                f"State: {self.state.name}]")
+                f"Sex Group: {self.sex_group.name}, Education Group: {self.education_group.name}, "
+                f"Social Platform: {self.social_platform.name}, State: {self.state.name}]")
