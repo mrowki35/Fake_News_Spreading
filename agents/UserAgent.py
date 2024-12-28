@@ -15,6 +15,7 @@ class UserAgent:
             model (DisinformationModel): Reference to the model.
             age_group (AgeGroup): Age group of the agent.
             sex_group (SexGroup): Sex of the agent.
+            education_group (EducationGroup): Education level of the agent.
             social_platform (SocialPlatform): Social media platform of the agent.
         """
         self.unique_id = unique_id
@@ -42,39 +43,54 @@ class UserAgent:
 
     def _susceptible_to_exposed(self):
         """
-        Transition from S (Susceptible) to E (Exposed) with probability alpha.
+        Transition from S (Susceptible) to E (Exposed) with probability alpha adjusted by attributes.
         """
-        alpha = self.model.alpha
-        if random.random() < alpha:
+        base_alpha = self.model.alpha
+        alpha_modifier = self.model.get_alpha_modifier(self)
+        effective_alpha = base_alpha * alpha_modifier
+
+        if random.random() < effective_alpha:
             self.state = State.EXPOSED
 
     def _exposed_transition(self):
         """
-        Transition from E (Exposed) to I (Infected) with probability beta
-        or to D (Doubtful) with probability gamma.
+        Transition from E (Exposed) to I (Infected) with probability beta adjusted by attributes
+        or to D (Doubtful) with probability gamma adjusted by attributes.
         """
-        beta = self.model.beta
-        gamma = self.model.gamma
+        base_beta = self.model.beta
+        base_gamma = self.model.gamma
+        beta_modifier = self.model.get_beta_modifier(self)
+        gamma_modifier = self.model.get_gamma_modifier(self)
+
+        effective_beta = base_beta * beta_modifier
+        effective_gamma = base_gamma * gamma_modifier
+
         rand = random.random()
-        if rand < beta:
+        if rand < effective_beta:
             self.state = State.INFECTED
-        elif rand < beta + gamma:
+        elif rand < effective_beta + effective_gamma:
             self.state = State.DOUBTFUL
 
     def _infected_to_recovered(self):
         """
-        Transition from I (Infected) to R (Recovered) with probability delta.
+        Transition from I (Infected) to R (Recovered) with probability delta adjusted by attributes.
         """
-        delta = self.model.delta
-        if random.random() < delta:
+        base_delta = self.model.delta
+        delta_modifier = self.model.get_delta_modifier(self)
+        effective_delta = base_delta * delta_modifier
+
+        if random.random() < effective_delta:
             self.state = State.RECOVERED
 
     def _doubtful_to_exposed(self):
         """
-        Transition from D (Doubtful) to E (Exposed) with probability theta.
+        Transition from D (Doubtful) to E (Exposed) with probability theta adjusted by attributes.
         """
-        theta = self.model.theta
-        if random.random() < theta:
+        base_theta = self.model.theta
+        theta_modifier = self.model.get_theta_modifier(self)
+        effective_theta = base_theta * theta_modifier
+
+        if random.random() < effective_theta:
             self.state = State.EXPOSED
 
     def __repr__(self):
