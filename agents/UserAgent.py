@@ -68,7 +68,7 @@ class UserAgent:
         rand = random.random()
         if rand < effective_beta:
             self.state = State.INFECTED
-        elif rand < effective_beta + effective_gamma:
+        elif rand < effective_gamma:
             self.state = State.DOUBTFUL
 
     def _infected_to_recovered(self):

@@ -101,7 +101,7 @@ class DisinformationModel:
             EducationGroup.VOCATIONAL: 0.9,
         }
 
-        platfrom_mod = { 
+        platfrom_mod = {
             SocialPlatform.LinkedIn: 0.2,
             SocialPlatform.Facebook: 0.55,
             SocialPlatform.Instagram: 0.4,
@@ -128,29 +128,28 @@ class DisinformationModel:
         """
         Define modifiers for beta based on age, sex, and education.
         """
-        # Przykładowe modyfikatory
         age_mod = {
-            AgeGroup.from00to09: 0.4,
-            AgeGroup.from10to19: 0.6,
-            AgeGroup.from20to29: 1.0,
-            AgeGroup.from30to39: 1.0,
-            AgeGroup.from40to49: 0.8,
-            AgeGroup.from50to59: 0.7,
-            AgeGroup.from60to69: 0.6,
-            AgeGroup.from70to79: 0.5,
-            AgeGroup.from80toXX: 0.4,
+            AgeGroup.from00to09: 1.3,
+            AgeGroup.from10to19: 1.1,
+            AgeGroup.from20to29: 0.65,
+            AgeGroup.from30to39: 0.55,
+            AgeGroup.from40to49: 0.50,
+            AgeGroup.from50to59: 0.65,
+            AgeGroup.from60to69: 0.8,
+            AgeGroup.from70to79: 1.2,
+            AgeGroup.from80toXX: 1.4,
         }
 
         sex_mod = {
             SexGroup.MALE: 1.0,
             SexGroup.FEMALE: 0.95,
-            SexGroup.OTHER: 0.9,
+            SexGroup.OTHER: 1.1,
         }
 
         edu_mod = {
-            EducationGroup.PRIMARY: 0.6,
+            EducationGroup.PRIMARY: 1.2,
             EducationGroup.SECONDARY: 0.8,
-            EducationGroup.HIGHER: 1.0,
+            EducationGroup.HIGHER: 0.6,
             EducationGroup.VOCATIONAL: 0.85,
         }
 
@@ -164,7 +163,6 @@ class DisinformationModel:
         """
         Define modifiers for gamma based on age, sex, and education.
         """
-        # Przykładowe modyfikatory
         age_mod = {
             AgeGroup.from00to09: 1.2,
             AgeGroup.from10to19: 1.1,
@@ -262,8 +260,6 @@ class DisinformationModel:
             EducationGroup.VOCATIONAL: 1.5,
         }
 
- 
-
         return {
             'age': age_mod,
             'sex': sex_mod,
@@ -353,12 +349,11 @@ class DisinformationModel:
 
         Returns:
             float: The modifier for alpha.
-            1.1, 1.2, 1.1, 0.65
         """
-        mod = 0.5 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0) 
+        mod = 0.60 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0)
         + 0.05 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
-        + 0.35 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
-        + 0.2 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)
+        + 0.50 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
+        + 0.35 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)
 
         return mod
 
@@ -372,10 +367,10 @@ class DisinformationModel:
         Returns:
             float: The modifier for beta.
         """
-        mod = 1.0
-        mod *= self.beta_modifiers['age'].get(agent.age_group, 1.0)
-        mod *= self.beta_modifiers['sex'].get(agent.sex_group, 1.0)
-        mod *= self.beta_modifiers['education'].get(agent.education_group, 1.0)
+        mod = 0.05 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
+        + 0.45 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
+        + 0.30 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)
+
         return mod
 
     def get_gamma_modifier(self, agent):
