@@ -33,23 +33,29 @@ class SimulationApp:
 
         self.plotter = Plotter(self.root)
 
+        # Control Frame
         control_frame = ttk.Frame(self.root)
         control_frame.pack(side=tk.BOTTOM, pady=10)
 
+        # Start Button
         self.start_button = ttk.Button(control_frame, text="Start Simulation", command=self.start_simulation)
         self.start_button.grid(row=0, column=0, padx=5)
 
+        # Stop Button
         self.stop_button = ttk.Button(control_frame, text="Stop Simulation", command=self.stop_simulation,
                                       state=tk.DISABLED)
         self.stop_button.grid(row=0, column=1, padx=5)
 
+        # Restart Button
         self.restart_button = ttk.Button(control_frame, text="Restart Simulation", command=self.restart_simulation,
                                          state=tk.DISABLED)
         self.restart_button.grid(row=0, column=2, padx=5)
 
+        # Save Results Button
         self.save_button = ttk.Button(control_frame, text="Save Results", command=self.save_results, state=tk.DISABLED)
         self.save_button.grid(row=0, column=3, padx=5)
 
+        # Slider Frame
         slider_frame = ttk.Frame(self.root)
         slider_frame.pack(side=tk.BOTTOM, pady=10, fill=tk.X)
 
@@ -61,53 +67,62 @@ class SimulationApp:
         self.step_label = ttk.Label(slider_frame, text="0")
         self.step_label.pack(side=tk.LEFT, padx=5)
 
+        # Settings Frame
         settings_frame = ttk.LabelFrame(self.root, text="Simulation Parameters")
         settings_frame.pack(side=tk.TOP, padx=10, pady=10, fill=tk.X)
 
+        # Number of Agents
         ttk.Label(settings_frame, text="Number of Agents:").grid(row=0, column=0, sticky=tk.W, padx=5, pady=2)
         self.num_agents_var = tk.IntVar(value=1000)
         self.num_agents_entry = ttk.Entry(settings_frame, textvariable=self.num_agents_var)
         self.num_agents_entry.grid(row=0, column=1, padx=5, pady=2)
 
+        # Number of Initial Believing Agents
         ttk.Label(settings_frame, text="Initial Believing Agents:").grid(row=1, column=0, sticky=tk.W, padx=5, pady=2)
         self.initial_believing_var = tk.IntVar(value=50)
         self.initial_believing_entry = ttk.Entry(settings_frame, textvariable=self.initial_believing_var)
         self.initial_believing_entry.grid(row=1, column=1, padx=5, pady=2)
 
+        # Alpha
         ttk.Label(settings_frame, text="Alpha:").grid(row=2, column=0, sticky=tk.W, padx=5, pady=2)
         self.alpha_var = tk.DoubleVar(value=0.05)
         self.alpha_entry = ttk.Entry(settings_frame, textvariable=self.alpha_var)
         self.alpha_entry.grid(row=2, column=1, padx=5, pady=2)
 
+        # Beta
         ttk.Label(settings_frame, text="Beta:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=2)
         self.beta_var = tk.DoubleVar(value=0.1)
         self.beta_entry = ttk.Entry(settings_frame, textvariable=self.beta_var)
         self.beta_entry.grid(row=3, column=1, padx=5, pady=2)
 
+        # Gamma
         ttk.Label(settings_frame, text="Gamma:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=2)
         self.gamma_var = tk.DoubleVar(value=0.05)
         self.gamma_entry = ttk.Entry(settings_frame, textvariable=self.gamma_var)
         self.gamma_entry.grid(row=4, column=1, padx=5, pady=2)
 
+        # Delta
         ttk.Label(settings_frame, text="Delta:").grid(row=5, column=0, sticky=tk.W, padx=5, pady=2)
         self.delta_var = tk.DoubleVar(value=0.02)
         self.delta_entry = ttk.Entry(settings_frame, textvariable=self.delta_var)
         self.delta_entry.grid(row=5, column=1, padx=5, pady=2)
 
+        # Theta
         ttk.Label(settings_frame, text="Theta:").grid(row=6, column=0, sticky=tk.W, padx=5, pady=2)
         self.theta_var = tk.DoubleVar(value=0.01)
         self.theta_entry = ttk.Entry(settings_frame, textvariable=self.theta_var)
         self.theta_entry.grid(row=6, column=1, padx=5, pady=2)
 
-        ttk.Label(settings_frame, text="Social Media Platforms:").grid(row=7, column=0, sticky=tk.W, padx=5, pady=2)
-        self.platform_vars = {}
+        # Social Media Platforms
+        ttk.Label(settings_frame, text="Social Media Platform:").grid(row=7, column=0, sticky=tk.W, padx=5, pady=2)
+        self.selected_platform_var = tk.StringVar(value="")
+
         platforms = [platform.name for platform in SocialPlatform]
         for idx, platform in enumerate(platforms):
-            var = tk.BooleanVar(value=True)
-            chk = ttk.Checkbutton(settings_frame, text=platform, variable=var)
-            chk.grid(row=7 + idx // 4, column=1 + idx % 4, sticky=tk.W, padx=5, pady=2)
-            self.platform_vars[platform] = var
+            rb = ttk.Radiobutton(settings_frame, text=platform, variable=self.selected_platform_var, value=platform)
+            rb.grid(row=7 + idx // 4, column=1 + idx % 4, sticky=tk.W, padx=5, pady=2)
 
+        # State Counts Frame
         counts_frame = ttk.LabelFrame(self.root, text="Agent States")
         counts_frame.pack(side=tk.LEFT, padx=10, pady=10)
 
@@ -121,6 +136,9 @@ class SimulationApp:
             percent_label = ttk.Label(counts_frame, text=f"{state.name} (%): 0.00%")
             percent_label.grid(row=idx, column=1, sticky=tk.W, pady=2)
             self.percent_labels[state] = percent_label
+
+        self.selected_platforms_label = ttk.Label(counts_frame, text="Selected Platform: None")
+        self.selected_platforms_label.grid(row=len(State), column=0, columnspan=2, sticky=tk.W, pady=2)
 
     def start_simulation(self):
         """
@@ -149,10 +167,11 @@ class SimulationApp:
                 if not (0 <= theta <= 1):
                     raise ValueError("Theta must be between 0 and 1.")
 
-                selected_platforms = [SocialPlatform[platform] for platform, var in self.platform_vars.items() if
-                                      var.get()]
-                if not selected_platforms:
-                    raise ValueError("At least one social media platform must be selected.")
+                selected_platform_name = self.selected_platform_var.get()
+                if not selected_platform_name:
+                    raise ValueError("Please select at least one social media platform.")
+
+                selected_platform = SocialPlatform[selected_platform_name]
 
                 self.model = DisinformationModel(
                     N=N,
@@ -162,7 +181,7 @@ class SimulationApp:
                     delta=delta,
                     theta=theta,
                     initial_believing_agents=initial_believing,
-                    selected_social_platforms=selected_platforms
+                    selected_social_platforms=[selected_platform]
                 )
 
                 self.state_counter = StateCounter(self.model)
@@ -176,6 +195,10 @@ class SimulationApp:
                 self.update_state_labels(counts)
 
                 self.plotter.update_plot(self.state_counter.get_history())
+
+                platforms_text = selected_platform_name
+                self.selected_platforms_label.config(text=f"Selected Platform: {platforms_text}")
+                logging.info(f"Selected Social Media Platform: {platforms_text}")
 
                 self.is_running = True
                 self.stop_event.clear()
@@ -229,9 +252,11 @@ class SimulationApp:
             if not (0 <= theta <= 1):
                 raise ValueError("Theta must be between 0 and 1.")
 
-            selected_platforms = [SocialPlatform[platform] for platform, var in self.platform_vars.items() if var.get()]
-            if not selected_platforms:
-                raise ValueError("At least one social media platform must be selected.")
+            selected_platform_name = self.selected_platform_var.get()
+            if not selected_platform_name:
+                raise ValueError("Please select at least one social media platform.")
+
+            selected_platform = SocialPlatform[selected_platform_name]
 
             self.model = DisinformationModel(
                 N=N,
@@ -241,7 +266,7 @@ class SimulationApp:
                 delta=delta,
                 theta=theta,
                 initial_believing_agents=initial_believing,
-                selected_social_platforms=selected_platforms
+                selected_social_platforms=[selected_platform]
             )
 
             self.state_counter = StateCounter(self.model)
@@ -255,6 +280,10 @@ class SimulationApp:
             self.update_state_labels(counts)
 
             self.plotter.update_plot(self.state_counter.get_history())
+
+            platforms_text = selected_platform_name
+            self.selected_platforms_label.config(text=f"Selected Platform: {platforms_text}")
+            logging.info(f"Selected Social Media Platform: {platforms_text}")
 
             self.is_running = True
             self.stop_event.clear()
@@ -386,6 +415,10 @@ class SimulationApp:
         try:
             with open(filepath, 'w', newline='') as csvfile:
                 writer = csv.writer(csvfile)
+                selected_platform = self.model.selected_social_platforms[
+                    0].name if self.model.selected_social_platforms else "None"
+                writer.writerow(["Selected Social Media Platform:", selected_platform])
+                writer.writerow([])
                 header = ["Step"] + [state.name for state in State]
                 writer.writerow(header)
                 for step in range(len(history[next(iter(history))])):
