@@ -350,10 +350,14 @@ class DisinformationModel:
         Returns:
             float: The modifier for alpha.
         """
+        noise = random.gauss(0, 0.001)
+
         mod = (7.0 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0)
                + 0.03 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
                + 0.25 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
                + 0.2 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)) * 0.02
+
+        mod += noise
 
         return mod
 
@@ -367,9 +371,13 @@ class DisinformationModel:
         Returns:
             float: The modifier for beta.
         """
+        noise = random.gauss(0, 0.001)
+
         mod = (0.05 * self.beta_modifiers['sex'].get(agent.sex_group, 1.0)
                + 0.16 * self.beta_modifiers['age'].get(agent.age_group, 1.0)
                + 0.1 * self.beta_modifiers['education'].get(agent.education_group, 1.0)) * 0.13
+
+        mod += noise
 
         return mod
 
@@ -383,9 +391,13 @@ class DisinformationModel:
         Returns:
             float: The modifier for gamma.
         """
+        noise = random.gauss(0, 0.001)
+
         mod = (0.9 * self.gamma_modifiers['age'].get(agent.age_group, 1.0)
                + 0.1 * self.gamma_modifiers['sex'].get(agent.sex_group, 1.0)
                + 0.7 * self.gamma_modifiers['education'].get(agent.education_group, 1.0)) * 0.1
+
+        mod += noise
 
         return mod
 
@@ -399,9 +411,13 @@ class DisinformationModel:
         Returns:
             float: The modifier for delta.
         """
+        noise = random.gauss(0, 0.001)
+
         mod = (0.6 * self.delta_modifiers['age'].get(agent.age_group, 1.0)
                + 0.1 * self.delta_modifiers['sex'].get(agent.sex_group, 1.0)
                + 0.5 * self.delta_modifiers['education'].get(agent.education_group, 1.0)) * 0.5
+
+        mod += noise
 
         return mod
 
@@ -415,9 +431,13 @@ class DisinformationModel:
         Returns:
             float: The modifier for theta.
         """
+        noise = random.gauss(0, 0.001)
+
         mod = (0.5 * self.theta_modifiers['age'].get(agent.age_group, 1.0)
                + 0.005 * self.theta_modifiers['sex'].get(agent.sex_group, 1.0)
                + 0.5 * self.theta_modifiers['education'].get(agent.education_group, 1.0)) * 0.02
+
+        mod += noise
 
         return mod
 

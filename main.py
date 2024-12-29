@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def run_model():
     root = tk.Tk()
-    app = SimulationApp(root, num_steps=200, update_frequency=1)
+    SimulationApp(root, num_steps=200, update_frequency=1)
     root.mainloop()
 
 
