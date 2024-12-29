@@ -63,17 +63,13 @@ class UserAgent:
         gamma_modifier = self.model.get_gamma_modifier(self)
 
         effective_beta = base_beta * beta_modifier
-        print(effective_beta)
-        # effective_beta = 0.2
         effective_gamma = base_gamma * gamma_modifier
 
         rand = random.random()
         if rand < effective_beta:
             self.state = State.INFECTED
-            # print("Infection")
         elif rand < effective_gamma:
             self.state = State.DOUBTFUL
-            # print("Doubtful")
 
     def _infected_to_recovered(self):
         """

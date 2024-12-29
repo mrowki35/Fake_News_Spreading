@@ -102,16 +102,16 @@ class DisinformationModel:
         }
 
         platfrom_mod = {
-            SocialPlatform.LinkedIn: 0.2,
+            SocialPlatform.LinkedIn: 0.1,
             SocialPlatform.Facebook: 0.55,
-            SocialPlatform.Instagram: 0.4,
-            SocialPlatform.X: 0.60,
+            SocialPlatform.Instagram: 0.25,
+            SocialPlatform.X: 0.6,
             SocialPlatform.Telegram: 0.1,
             SocialPlatform.Reddit: 0.3,
-            SocialPlatform.Pinterest: 0.1,
+            SocialPlatform.Pinterest: 0.025,
             SocialPlatform.Snapchat: 0.15,
             SocialPlatform.TikTok: 0.69,
-            SocialPlatform.YouTube: 0.3,
+            SocialPlatform.YouTube: 0.35,
             SocialPlatform.WeChat: 0.05,
             SocialPlatform.Weibo: 0.1,
             SocialPlatform.Other: 0.32,
@@ -164,28 +164,28 @@ class DisinformationModel:
         Define modifiers for gamma based on age, sex, and education.
         """
         age_mod = {
-            AgeGroup.from00to09: 1.2,
-            AgeGroup.from10to19: 1.1,
-            AgeGroup.from20to29: 1.0,
-            AgeGroup.from30to39: 1.0,
-            AgeGroup.from40to49: 1.1,
-            AgeGroup.from50to59: 1.2,
+            AgeGroup.from00to09: 0.7,
+            AgeGroup.from10to19: 0.9,
+            AgeGroup.from20to29: 1.9,
+            AgeGroup.from30to39: 2.5,
+            AgeGroup.from40to49: 2.8,
+            AgeGroup.from50to59: 2.7,
             AgeGroup.from60to69: 1.3,
-            AgeGroup.from70to79: 1.4,
-            AgeGroup.from80toXX: 1.5,
+            AgeGroup.from70to79: 0.9,
+            AgeGroup.from80toXX: 0.7,
         }
 
         sex_mod = {
             SexGroup.MALE: 1.0,
             SexGroup.FEMALE: 1.1,
-            SexGroup.OTHER: 1.2,
+            SexGroup.OTHER: 0.9,
         }
 
         edu_mod = {
-            EducationGroup.PRIMARY: 1.5,
-            EducationGroup.SECONDARY: 1.2,
-            EducationGroup.HIGHER: 1.0,
-            EducationGroup.VOCATIONAL: 1.3,
+            EducationGroup.PRIMARY: 0.7,
+            EducationGroup.SECONDARY: 1.7,
+            EducationGroup.HIGHER: 2.8,
+            EducationGroup.VOCATIONAL: 1.4,
         }
 
         return {
@@ -201,27 +201,27 @@ class DisinformationModel:
         # Przykładowe modyfikatory
         age_mod = {
             AgeGroup.from00to09: 0.8,
-            AgeGroup.from10to19: 0.9,
-            AgeGroup.from20to29: 1.0,
-            AgeGroup.from30to39: 1.0,
-            AgeGroup.from40to49: 1.1,
-            AgeGroup.from50to59: 1.2,
-            AgeGroup.from60to69: 1.3,
-            AgeGroup.from70to79: 1.4,
-            AgeGroup.from80toXX: 1.5,
+            AgeGroup.from10to19: 1.4,
+            AgeGroup.from20to29: 1.8,
+            AgeGroup.from30to39: 2.0,
+            AgeGroup.from40to49: 2.0,
+            AgeGroup.from50to59: 1.9,
+            AgeGroup.from60to69: 1.2,
+            AgeGroup.from70to79: 1.0,
+            AgeGroup.from80toXX: 0.9,
         }
 
         sex_mod = {
             SexGroup.MALE: 1.0,
             SexGroup.FEMALE: 1.1,
-            SexGroup.OTHER: 1.2,
+            SexGroup.OTHER: 0.8,
         }
 
         edu_mod = {
-            EducationGroup.PRIMARY: 1.3,
+            EducationGroup.PRIMARY: 0.8,
             EducationGroup.SECONDARY: 1.1,
-            EducationGroup.HIGHER: 1.0,
-            EducationGroup.VOCATIONAL: 1.2,
+            EducationGroup.HIGHER: 2.0,
+            EducationGroup.VOCATIONAL: 1.4,
         }
 
         return {
@@ -236,28 +236,28 @@ class DisinformationModel:
         """
         # Przykładowe modyfikatory
         age_mod = {
-            AgeGroup.from00to09: 1.5,
-            AgeGroup.from10to19: 1.3,
+            AgeGroup.from00to09: 5,
+            AgeGroup.from10to19: 4,
             AgeGroup.from20to29: 1.0,
-            AgeGroup.from30to39: 1.0,
-            AgeGroup.from40to49: 1.2,
-            AgeGroup.from50to59: 1.4,
-            AgeGroup.from60to69: 1.6,
-            AgeGroup.from70to79: 1.8,
-            AgeGroup.from80toXX: 2.0,
+            AgeGroup.from30to39: 0.7,
+            AgeGroup.from40to49: 0.7,
+            AgeGroup.from50to59: 0.8,
+            AgeGroup.from60to69: 1.0,
+            AgeGroup.from70to79: 3,
+            AgeGroup.from80toXX: 3.8,
         }
 
         sex_mod = {
             SexGroup.MALE: 1.0,
-            SexGroup.FEMALE: 1.2,
-            SexGroup.OTHER: 1.4,
+            SexGroup.FEMALE: 0.9,
+            SexGroup.OTHER: 1.2,
         }
 
         edu_mod = {
-            EducationGroup.PRIMARY: 1.6,
-            EducationGroup.SECONDARY: 1.4,
+            EducationGroup.PRIMARY: 5.0,
+            EducationGroup.SECONDARY: 2.0,
             EducationGroup.HIGHER: 1.0,
-            EducationGroup.VOCATIONAL: 1.5,
+            EducationGroup.VOCATIONAL: 2.2,
         }
 
         return {
@@ -350,10 +350,10 @@ class DisinformationModel:
         Returns:
             float: The modifier for alpha.
         """
-        mod = (0.60 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0)
-               + 0.05 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
-               + 0.50 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
-               + 0.35 * self.alpha_modifiers['education'].get(agent.education_group, 1.0))
+        mod = (7.0 * self.alpha_modifiers['platform'].get(self.selected_social_platforms[0], 1.0)
+               + 0.03 * self.alpha_modifiers['sex'].get(agent.sex_group, 1.0)
+               + 0.25 * self.alpha_modifiers['age'].get(agent.age_group, 1.0)
+               + 0.2 * self.alpha_modifiers['education'].get(agent.education_group, 1.0)) * 0.02
 
         return mod
 
@@ -369,8 +369,7 @@ class DisinformationModel:
         """
         mod = (0.05 * self.beta_modifiers['sex'].get(agent.sex_group, 1.0)
                + 0.16 * self.beta_modifiers['age'].get(agent.age_group, 1.0)
-               + 0.1 * self.beta_modifiers['education'].get(agent.education_group, 1.0)) * 0.2
-        # print(mod)
+               + 0.1 * self.beta_modifiers['education'].get(agent.education_group, 1.0)) * 0.13
 
         return mod
 
@@ -384,10 +383,10 @@ class DisinformationModel:
         Returns:
             float: The modifier for gamma.
         """
-        mod = 1.0
-        mod *= self.gamma_modifiers['age'].get(agent.age_group, 1.0)
-        mod *= self.gamma_modifiers['sex'].get(agent.sex_group, 1.0)
-        mod *= self.gamma_modifiers['education'].get(agent.education_group, 1.0)
+        mod = (0.9 * self.gamma_modifiers['age'].get(agent.age_group, 1.0)
+               + 0.1 * self.gamma_modifiers['sex'].get(agent.sex_group, 1.0)
+               + 0.7 * self.gamma_modifiers['education'].get(agent.education_group, 1.0)) * 0.1
+
         return mod
 
     def get_delta_modifier(self, agent):
@@ -400,10 +399,10 @@ class DisinformationModel:
         Returns:
             float: The modifier for delta.
         """
-        mod = 1.0
-        mod *= self.delta_modifiers['age'].get(agent.age_group, 1.0)
-        mod *= self.delta_modifiers['sex'].get(agent.sex_group, 1.0)
-        mod *= self.delta_modifiers['education'].get(agent.education_group, 1.0)
+        mod = (0.6 * self.delta_modifiers['age'].get(agent.age_group, 1.0)
+               + 0.1 * self.delta_modifiers['sex'].get(agent.sex_group, 1.0)
+               + 0.5 * self.delta_modifiers['education'].get(agent.education_group, 1.0)) * 0.5
+
         return mod
 
     def get_theta_modifier(self, agent):
@@ -416,10 +415,10 @@ class DisinformationModel:
         Returns:
             float: The modifier for theta.
         """
-        mod = 1.0
-        mod *= self.theta_modifiers['age'].get(agent.age_group, 1.0)
-        mod *= self.theta_modifiers['sex'].get(agent.sex_group, 1.0)
-        mod *= self.theta_modifiers['education'].get(agent.education_group, 1.0)
+        mod = (0.5 * self.theta_modifiers['age'].get(agent.age_group, 1.0)
+               + 0.005 * self.theta_modifiers['sex'].get(agent.sex_group, 1.0)
+               + 0.5 * self.theta_modifiers['education'].get(agent.education_group, 1.0)) * 0.02
+
         return mod
 
     def step(self):
