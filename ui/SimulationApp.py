@@ -88,31 +88,31 @@ class SimulationApp:
 
         # Alpha
         ttk.Label(settings_frame, text="Alpha:").grid(row=2, column=0, sticky=tk.W, padx=5, pady=2)
-        self.alpha_var = tk.DoubleVar(value=0.05)
+        self.alpha_var = tk.DoubleVar(value=1.0)
         self.alpha_entry = ttk.Entry(settings_frame, textvariable=self.alpha_var)
         self.alpha_entry.grid(row=2, column=1, padx=5, pady=2)
 
         # Beta
         ttk.Label(settings_frame, text="Beta:").grid(row=3, column=0, sticky=tk.W, padx=5, pady=2)
-        self.beta_var = tk.DoubleVar(value=0.1)
+        self.beta_var = tk.DoubleVar(value=1.0)
         self.beta_entry = ttk.Entry(settings_frame, textvariable=self.beta_var)
         self.beta_entry.grid(row=3, column=1, padx=5, pady=2)
 
         # Gamma
         ttk.Label(settings_frame, text="Gamma:").grid(row=4, column=0, sticky=tk.W, padx=5, pady=2)
-        self.gamma_var = tk.DoubleVar(value=0.05)
+        self.gamma_var = tk.DoubleVar(value=1.0)
         self.gamma_entry = ttk.Entry(settings_frame, textvariable=self.gamma_var)
         self.gamma_entry.grid(row=4, column=1, padx=5, pady=2)
 
         # Delta
         ttk.Label(settings_frame, text="Delta:").grid(row=5, column=0, sticky=tk.W, padx=5, pady=2)
-        self.delta_var = tk.DoubleVar(value=0.02)
+        self.delta_var = tk.DoubleVar(value=1.0)
         self.delta_entry = ttk.Entry(settings_frame, textvariable=self.delta_var)
         self.delta_entry.grid(row=5, column=1, padx=5, pady=2)
 
         # Theta
         ttk.Label(settings_frame, text="Theta:").grid(row=6, column=0, sticky=tk.W, padx=5, pady=2)
-        self.theta_var = tk.DoubleVar(value=0.01)
+        self.theta_var = tk.DoubleVar(value=1.0)
         self.theta_entry = ttk.Entry(settings_frame, textvariable=self.theta_var)
         self.theta_entry.grid(row=6, column=1, padx=5, pady=2)
 

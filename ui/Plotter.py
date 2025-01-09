@@ -22,8 +22,9 @@ class Plotter:
         self.ax.set_ylabel("Number of Agents")
         self.lines = {}
         for state in State:
-            line, = self.ax.plot([], [], label=f"{state.name}: 0")
-            self.lines[state] = line
+            if not state == State.SUSCEPTIBLE:
+                line, = self.ax.plot([], [], label=f"{state.name}: 0")
+                self.lines[state] = line
         self.legend = self.ax.legend(loc='lower center', bbox_to_anchor=(0.5, -0.25),
                                      ncol=len(State), fontsize='small')
 

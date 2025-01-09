@@ -47,7 +47,7 @@ class UserAgent:
         """
         base_alpha = self.model.alpha
         alpha_modifier = self.model.get_alpha_modifier(self)
-        effective_alpha = base_alpha * alpha_modifier
+        effective_alpha = base_alpha * alpha_modifier * 0.05
 
         if random.random() < effective_alpha:
             self.state = State.EXPOSED
@@ -62,8 +62,8 @@ class UserAgent:
         beta_modifier = self.model.get_beta_modifier(self)
         gamma_modifier = self.model.get_gamma_modifier(self)
 
-        effective_beta = base_beta * beta_modifier
-        effective_gamma = base_gamma * gamma_modifier
+        effective_beta = base_beta * beta_modifier * 0.1
+        effective_gamma = base_gamma * gamma_modifier * 0.05
 
         rand = random.random()
         if rand < effective_beta:
@@ -77,7 +77,7 @@ class UserAgent:
         """
         base_delta = self.model.delta
         delta_modifier = self.model.get_delta_modifier(self)
-        effective_delta = base_delta * delta_modifier
+        effective_delta = base_delta * delta_modifier * 0.02
 
         if random.random() < effective_delta:
             self.state = State.RECOVERED
@@ -88,7 +88,7 @@ class UserAgent:
         """
         base_theta = self.model.theta
         theta_modifier = self.model.get_theta_modifier(self)
-        effective_theta = base_theta * theta_modifier
+        effective_theta = base_theta * theta_modifier * 0.01
 
         if random.random() < effective_theta:
             self.state = State.EXPOSED
